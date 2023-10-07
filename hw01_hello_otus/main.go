@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	println(reverse.String("Hello, OTUS!"))
+	print(reverse.String("Hello, OTUS!"))
 }
