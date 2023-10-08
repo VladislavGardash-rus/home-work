@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"fmt" //nolint:gci
 	"golang.org/x/example/hello/reverse"
 )
 
