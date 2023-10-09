@@ -1,4 +1,4 @@
-module github.com/VladislavGardash-rus/home-work/tree/master/hw01_hello_otus
+module github.com/gardashvs/home-work/hw01_hello_otus
 
 go 1.20
 
