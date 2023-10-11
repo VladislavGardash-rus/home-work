@@ -10,28 +10,26 @@ import (
 var ErrInvalidString = errors.New("invalid string")
 
 func Unpack(inputString string) (string, error) {
+	if !ValidateString(inputString) {
+		return "", ErrInvalidString
+	}
+
 	resultString := ""
 	inputStringSymbols := strings.Split(inputString, "")
 	for i := range inputStringSymbols {
-		number, isNumber := SymbolIsNumber(inputStringSymbols[i])
-		if isNumber && number != 0 {
+		number, err := strconv.Atoi(inputStringSymbols[i])
+		if err == nil && number != 0 {
 			resultString += strings.Repeat(inputStringSymbols[i-1], number-1)
 			continue
-		} else if isNumber && number == 0 {
+		} else if err == nil && number == 0 {
 			resultString = resultString[:len(resultString)-1]
 			continue
 		}
+
 		resultString += inputStringSymbols[i]
 	}
-	return resultString, nil
-}
 
-func SymbolIsNumber(symbol string) (int, bool) {
-	number, err := strconv.Atoi(symbol)
-	if err != nil {
-		return 0, false
-	}
-	return number, true
+	return resultString, nil
 }
 
 func ValidateString(inputString string) bool {
