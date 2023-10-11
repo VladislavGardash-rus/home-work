@@ -15,6 +15,7 @@ func TestUnpack(t *testing.T) {
 		{input: "a4bc2d5e", expected: "aaaabccddddde"},
 		{input: "abccd", expected: "abccd"},
 		{input: "", expected: ""},
+		{input: "a0", expected: ""},
 		{input: "aaa0b", expected: "aab"},
 		// uncomment if task with asterisk completed
 		// {input: `qwe\4\5`, expected: `qwe45`},
@@ -63,25 +64,6 @@ func TestValidateString(t *testing.T) {
 		tc := tc
 		t.Run(tc.input, func(t *testing.T) {
 			isValid := ValidateString(tc.input)
-			require.Equal(t, tc.expected, isValid)
-		})
-	}
-}
-
-func TestCutZeroSymbolsFromString(t *testing.T) {
-	tests := []struct {
-		input    string
-		expected string
-	}{
-		{input: "a0a0bas2d0", expected: "bas2"},
-		{input: "aa0bas2d0", expected: "abas2"},
-		{input: "a0a0ba0s2d0", expected: "bs2"},
-	}
-
-	for _, tc := range tests {
-		tc := tc
-		t.Run(tc.input, func(t *testing.T) {
-			isValid := CutZeroSymbolsFromString(tc.input)
 			require.Equal(t, tc.expected, isValid)
 		})
 	}
