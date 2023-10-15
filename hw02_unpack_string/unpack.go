@@ -14,22 +14,23 @@ func Unpack(inputString string) (string, error) {
 		return "", ErrInvalidString
 	}
 
-	resultString := ""
-	inputStringSymbols := strings.Split(inputString, "")
-	for i := range inputStringSymbols {
-		number, err := strconv.Atoi(inputStringSymbols[i])
+	resultRunes := make([]rune, 0)
+	inputRunes := []rune(inputString)
+	for i := range []rune(inputString) {
+		number, err := strconv.Atoi(string(inputRunes[i]))
 		if err == nil && number != 0 {
-			resultString += strings.Repeat(inputStringSymbols[i-1], number-1)
+			for j := 1; j < number; j++ {
+				resultRunes = append(resultRunes, inputRunes[i-1])
+			}
 			continue
 		} else if err == nil && number == 0 {
-			resultString = resultString[:len(resultString)-1]
+			resultRunes = resultRunes[:len(resultRunes)-1]
 			continue
 		}
-
-		resultString += inputStringSymbols[i]
+		resultRunes = append(resultRunes, inputRunes[i])
 	}
 
-	return resultString, nil
+	return string(resultRunes), nil
 }
 
 func ValidateString(inputString string) bool {
