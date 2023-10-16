@@ -15,6 +15,8 @@ func TestUnpack(t *testing.T) {
 		{input: "a4bc2d5e", expected: "aaaabccddddde"},
 		{input: "abccd", expected: "abccd"},
 		{input: "", expected: ""},
+		{input: "🙃0", expected: ""},
+		{input: "a0", expected: ""},
 		{input: "aaa0b", expected: "aab"},
 		// uncomment if task with asterisk completed
 		// {input: `qwe\4\5`, expected: `qwe45`},
@@ -40,6 +42,30 @@ func TestUnpackInvalidString(t *testing.T) {
 		t.Run(tc, func(t *testing.T) {
 			_, err := Unpack(tc)
 			require.Truef(t, errors.Is(err, ErrInvalidString), "actual error %q", err)
+		})
+	}
+}
+
+func TestValidateString(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected bool
+	}{
+		{input: "a4bc2d5e", expected: true},
+		{input: "abccd", expected: true},
+		{input: "", expected: true},
+		{input: "3abc", expected: false},
+		{input: "45", expected: false},
+		{input: "aaa10b", expected: false},
+		{input: "abccd00abccd", expected: false},
+		{input: "abccd03abccd", expected: false},
+	}
+
+	for _, tc := range tests {
+		tc := tc
+		t.Run(tc.input, func(t *testing.T) {
+			isValid := ValidateString(tc.input)
+			require.Equal(t, tc.expected, isValid)
 		})
 	}
 }
