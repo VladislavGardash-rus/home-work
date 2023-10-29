@@ -6,7 +6,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/stretchr/testify/require" //nolint
+	"github.com/stretchr/testify/require"
 )
 
 func TestCache(t *testing.T) {
