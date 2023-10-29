@@ -6,7 +6,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/require" //nolint
 )
 
 func TestCache(t *testing.T) {
@@ -51,9 +51,9 @@ func TestCache(t *testing.T) {
 
 	t.Run("clear", func(t *testing.T) {
 		cache := NewCache(3)
-		cache.Set("a", 1) //[1]
-		cache.Set("b", 2) //[1,2]
-		cache.Set("c", 3) //[1,2,3]
+		cache.Set("a", 1) // [1]
+		cache.Set("b", 2) // [1,2]
+		cache.Set("c", 3) // [1,2,3]
 		cache.Clear()
 
 		_, ok := cache.Get("a")
@@ -68,10 +68,10 @@ func TestCache(t *testing.T) {
 
 	t.Run("purge logic", func(t *testing.T) {
 		cache := NewCache(3)
-		cache.Set("a", 1) //[1]
-		cache.Set("b", 2) //[2,1]
-		cache.Set("c", 3) //[3,2,1]
-		cache.Set("d", 4) //[4,3,2]
+		cache.Set("a", 1) // [1]
+		cache.Set("b", 2) // [2,1]
+		cache.Set("c", 3) // [3,2,1]
+		cache.Set("d", 4) // [4,3,2]
 
 		_, ok := cache.Get("a")
 		require.False(t, ok)
@@ -84,11 +84,11 @@ func TestCache(t *testing.T) {
 		require.True(t, ok)
 		require.Equal(t, 2, val)
 
-		val, ok = cache.Get("d") //[4,2,3]
+		val, ok = cache.Get("d") // [4,2,3]
 		require.True(t, ok)
 		require.Equal(t, 4, val)
 
-		cache.Set("e", 5) //[5,4,2]
+		cache.Set("e", 5) // [5,4,2]
 
 		_, ok = cache.Get("c")
 		require.False(t, ok)
@@ -107,7 +107,7 @@ func TestCache(t *testing.T) {
 	})
 }
 
-func TestCacheMultithreading(t *testing.T) {
+func TestCacheMultithreading(_ *testing.T) {
 	c := NewCache(10)
 	wg := &sync.WaitGroup{}
 	wg.Add(2)
