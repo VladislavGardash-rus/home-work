@@ -11,14 +11,16 @@ type List interface {
 }
 
 type ListItem struct {
-	Value interface{}
-	Next  *ListItem
-	Prev  *ListItem
+	ExternalId Key
+	Value      interface{}
+	Next       *ListItem
+	Prev       *ListItem
 }
 
 type list struct {
-	firstItem *ListItem
-	lastItem  *ListItem
+	length int
+	head   *ListItem
+	tail   *ListItem
 }
 
 func NewList() List {
@@ -26,37 +28,22 @@ func NewList() List {
 }
 
 func (list *list) Len() int {
-	length := 0
-
-	item := list.firstItem
-	if list.firstItem != nil {
-		for {
-			length++
-
-			if item.Next == nil {
-				break
-			}
-
-			item = item.Next
-		}
-	}
-
-	return length
+	return list.length
 }
 
 func (list *list) Front() *ListItem {
-	return list.firstItem
+	return list.head
 }
 
 func (list *list) Back() *ListItem {
-	return list.lastItem
+	return list.tail
 }
 
 func (list *list) PushFront(value interface{}) *ListItem {
-	if list.firstItem == nil {
+	if list.head == nil {
 		insertFirstItem(list, value)
 	} else {
-		firstItem := list.firstItem
+		firstItem := list.head
 		item := &ListItem{
 			Value: value,
 			Prev:  nil,
@@ -64,42 +51,46 @@ func (list *list) PushFront(value interface{}) *ListItem {
 		}
 
 		firstItem.Prev = item
-		list.firstItem = item
+		list.head = item
 	}
 
-	return list.firstItem
+	list.length++
+
+	return list.head
 }
 
 func (list *list) PushBack(value interface{}) *ListItem {
-	if list.lastItem == nil {
+	if list.tail == nil {
 		insertFirstItem(list, value)
 	} else {
 		item := &ListItem{
 			Value: value,
-			Prev:  list.lastItem,
+			Prev:  list.tail,
 			Next:  nil,
 		}
 
-		list.lastItem.Next = item
-		list.lastItem = item
+		list.tail.Next = item
+		list.tail = item
 	}
 
-	return list.lastItem
+	list.length++
+
+	return list.tail
 }
 
 func (list *list) Remove(item *ListItem) {
 	if item.Prev == nil {
-		list.firstItem = nil
+		list.head = nil
 		if item.Next != nil {
-			list.firstItem = item.Next
+			list.head = item.Next
 			item.Next.Prev = nil
 		}
 	}
 
 	if item.Next == nil {
-		list.lastItem = nil
+		list.tail = nil
 		if item.Prev != nil {
-			list.lastItem = item.Prev
+			list.tail = item.Prev
 			item.Prev.Next = nil
 		}
 	}
@@ -115,14 +106,16 @@ func (list *list) Remove(item *ListItem) {
 			item.Prev.Next = item.Next
 		}
 	}
+
+	list.length--
 }
 
 func (list *list) MoveToFront(item *ListItem) {
 	list.Remove(item)
 	item.Prev = nil
-	item.Next = list.firstItem
-	list.firstItem.Prev = item
-	list.firstItem = item
+	item.Next = list.head
+	list.head.Prev = item
+	list.head = item
 }
 
 func insertFirstItem(list *list, value interface{}) {
@@ -132,6 +125,6 @@ func insertFirstItem(list *list, value interface{}) {
 		Next:  nil,
 	}
 
-	list.firstItem = item
-	list.lastItem = item
+	list.head = item
+	list.tail = item
 }

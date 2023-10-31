@@ -32,13 +32,14 @@ func (lruCache *lruCache) Set(key Key, value interface{}) bool {
 	if item, ok := lruCache.items[key]; ok {
 		item.Value = value
 		lruCache.queue.MoveToFront(item)
-		lruCache.regulateLength()
+		lruCache.deleteOldExtraItemIfExist()
 		return true
 	}
 
 	item := lruCache.queue.PushFront(value)
+	item.ExternalId = key
 	lruCache.items[key] = item
-	lruCache.regulateLength()
+	lruCache.deleteOldExtraItemIfExist()
 
 	return false
 }
@@ -60,14 +61,9 @@ func (lruCache *lruCache) Clear() {
 	lruCache.items = make(map[Key]*ListItem, lruCache.capacity)
 }
 
-func (lruCache *lruCache) regulateLength() {
+func (lruCache *lruCache) deleteOldExtraItemIfExist() {
 	if len(lruCache.items) > lruCache.capacity {
-		for key, value := range lruCache.items {
-			if value == lruCache.queue.Back() {
-				delete(lruCache.items, key)
-				break
-			}
-		}
+		delete(lruCache.items, lruCache.queue.Back().ExternalId)
 	}
 
 	if lruCache.queue.Len() > lruCache.capacity {
