@@ -11,7 +11,7 @@ type List interface {
 }
 
 type ListItem struct {
-	ExternalId Key
+	ExternalID Key
 	Value      interface{}
 	Next       *ListItem
 	Prev       *ListItem

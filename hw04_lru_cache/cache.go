@@ -37,7 +37,7 @@ func (lruCache *lruCache) Set(key Key, value interface{}) bool {
 	}
 
 	item := lruCache.queue.PushFront(value)
-	item.ExternalId = key
+	item.ExternalID = key
 	lruCache.items[key] = item
 	lruCache.deleteOldExtraItemIfExist()
 
@@ -63,7 +63,7 @@ func (lruCache *lruCache) Clear() {
 
 func (lruCache *lruCache) deleteOldExtraItemIfExist() {
 	if len(lruCache.items) > lruCache.capacity {
-		delete(lruCache.items, lruCache.queue.Back().ExternalId)
+		delete(lruCache.items, lruCache.queue.Back().ExternalID)
 	}
 
 	if lruCache.queue.Len() > lruCache.capacity {
