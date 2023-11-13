@@ -9,10 +9,6 @@ var ErrErrorsLimitExceeded = errors.New("errors limit exceeded")
 
 type Task func() error
 
-type TaskResult struct {
-	Err error
-}
-
 // Run starts tasks in n goroutines and stops its work when receiving m errors from tasks.
 func Run(tasks []Task, maxProcessCount, maxErrorCount int) error {
 	if maxErrorCount <= 0 {
@@ -44,11 +40,12 @@ func Run(tasks []Task, maxProcessCount, maxErrorCount int) error {
 				if err != nil {
 					mtx.Lock()
 					errorCount++
-					mtx.Unlock()
 					if errorCount >= maxErrorCount {
 						mainErr = ErrErrorsLimitExceeded
+						mtx.Unlock()
 						return
 					}
+					mtx.Unlock()
 				}
 			}
 		}()

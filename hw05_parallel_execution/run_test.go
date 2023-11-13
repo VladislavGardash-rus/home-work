@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require" //nolint:all
-	"go.uber.org/goleak"                  //nolint:gosec
+	"go.uber.org/goleak"
 )
 
 func TestRun(t *testing.T) {
