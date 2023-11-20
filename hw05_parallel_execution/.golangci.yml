@@ -11,8 +11,8 @@ linters-settings:
   # See the dedicated "linters-settings" documentation section.
   option: value
 linters:
-  # See the dedicated "linters" documentation section.
-  option: value
+  # See the dedicated "linters" documentation section.\
+  enable-all: false
 issues:
   # See the dedicated "issues" documentation section.
   option: value
