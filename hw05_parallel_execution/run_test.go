@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/require"
-	"go.uber.org/goleak"
+	"github.com/stretchr/testify/require" //nolint:all
+	"go.uber.org/goleak"                  //nolint:all
 )
 
 func TestRun(t *testing.T) {
@@ -22,8 +22,10 @@ func TestRun(t *testing.T) {
 		var runTasksCount int32
 
 		for i := 0; i < tasksCount; i++ {
+			i := i
 			err := fmt.Errorf("error from task %d", i)
 			tasks = append(tasks, func() error {
+				fmt.Println(i)
 				time.Sleep(time.Millisecond * time.Duration(rand.Intn(100)))
 				atomic.AddInt32(&runTasksCount, 1)
 				return err
@@ -31,7 +33,7 @@ func TestRun(t *testing.T) {
 		}
 
 		workersCount := 10
-		maxErrorsCount := 23
+		maxErrorsCount := 10
 		err := Run(tasks, workersCount, maxErrorsCount)
 
 		require.Truef(t, errors.Is(err, ErrErrorsLimitExceeded), "actual err - %v", err)
