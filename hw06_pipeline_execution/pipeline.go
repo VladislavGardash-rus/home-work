@@ -34,5 +34,5 @@ func ExecutePipeline(in In, done In, stages ...Stage) Out {
 		in = stage(stageWithDoneFunc(in, done))
 	}
 
-	return stageWithDoneFunc(in, done)
+	return in
 }
