@@ -1,10 +1,10 @@
 package main
 
 import (
-	"errors"
-	"github.com/cheggaaa/pb/v3"
-	"io"
-	"os"
+	"errors"                    //nolint:all
+	"github.com/cheggaaa/pb/v3" //nolint:all
+	"io"                        //nolint:all
+	"os"                        //nolint:all
 )
 
 var (

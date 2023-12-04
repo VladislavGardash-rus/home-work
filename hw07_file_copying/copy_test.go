@@ -8,10 +8,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const sourceFileName = "testdata/input.txt"
-const targetFileName = "out.txt"
-
 func TestCopy(t *testing.T) {
+	const (
+		sourceFileName = "testdata/input.txt"
+		targetFileName = "out.txt"
+	)
+
 	t.Run("negative offset", func(t *testing.T) {
 		err := Copy(sourceFileName, targetFileName, -1, 0)
 		require.Equal(t, nil, err)

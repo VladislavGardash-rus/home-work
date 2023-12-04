@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/cheggaaa/pb/v3 v3.1.4
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.7.0
 )
 
 require (
