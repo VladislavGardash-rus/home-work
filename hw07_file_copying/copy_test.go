@@ -22,7 +22,7 @@ func TestCopy(t *testing.T) {
 		targetFileInfo, _ := os.Stat(targetFileName)
 		require.Equal(t, resourceFileInfo.Size(), targetFileInfo.Size())
 
-		err = remove(targetFileName)
+		err = os.Remove(targetFileName)
 		require.Equal(t, nil, err)
 	})
 
@@ -34,7 +34,7 @@ func TestCopy(t *testing.T) {
 		targetFileInfo, _ := os.Stat(targetFileName)
 		require.Equal(t, resourceFileInfo.Size(), targetFileInfo.Size())
 
-		err = remove(targetFileName)
+		err = os.Remove(targetFileName)
 		require.Equal(t, nil, err)
 	})
 
@@ -46,7 +46,7 @@ func TestCopy(t *testing.T) {
 		targetFileInfo, _ := os.Stat(targetFileName)
 		require.Equal(t, resourceFileInfo.Size(), targetFileInfo.Size())
 
-		err = remove(targetFileName)
+		err = os.Remove(targetFileName)
 		require.Equal(t, nil, err)
 	})
 
@@ -62,7 +62,7 @@ func TestCopy(t *testing.T) {
 		targetFileInfo, _ := os.Stat(targetFileName)
 		require.Equal(t, int64(100), targetFileInfo.Size())
 
-		err = remove(targetFileName)
+		err = os.Remove(targetFileName)
 		require.Equal(t, nil, err)
 	})
 
@@ -83,15 +83,7 @@ func TestCopy(t *testing.T) {
 		require.Equal(t, "Play", string(data))
 
 		file.Close()
-		err = remove(targetFileName)
+		err = os.Remove(targetFileName)
 		require.Equal(t, nil, err)
 	})
-}
-
-func remove(name string) error {
-	err := os.Remove(name)
-	if err != nil {
-		return err
-	}
-	return nil
 }
