@@ -80,7 +80,12 @@ func TestCopy(t *testing.T) {
 		data, err := io.ReadAll(file)
 		require.Equal(t, nil, err)
 
-		require.Equal(t, "Play", string(data))
+		sourceFile, err := os.Open(sourceFileName)
+		require.Equal(t, nil, err)
+
+		dataSourceFile, err := io.ReadAll(sourceFile)
+		require.Equal(t, nil, err)
+		require.Equal(t, dataSourceFile[50:54], data)
 
 		file.Close()
 		err = os.Remove(targetFileName)
