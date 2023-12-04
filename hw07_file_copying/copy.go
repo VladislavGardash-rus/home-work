@@ -22,8 +22,7 @@ func Copy(fromPath string, toPath string, offset, limit int64) error {
 		return ErrUnsupportedFile
 	}
 
-	fromSize := resourceFileInfo.Size()
-	if offset > fromSize {
+	if offset > resourceFileInfo.Size() {
 		return ErrOffsetExceedsFileSize
 	}
 
