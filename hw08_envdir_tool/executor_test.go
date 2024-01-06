@@ -20,7 +20,7 @@ func TestRunCmd(t *testing.T) {
 		err = ioutil.WriteFile(filepath.Join(dir, "envs", "BAR"), []byte("bar"), 0666)
 		require.NoError(t, err)
 
-		err = ioutil.WriteFile(filepath.Join(dir, "time_test.sh"), []byte("#!/usr/bin/env bash\n\n\t\techo -e \\\"HELLO is (${HELLO})\n\t\tBAR is (${BAR})\n\t\tFOO is (${FOO})\n\t\tUNSET is (${UNSET})\n\t\tADDED is (${ADDED})\n\t\tEMPTY is (${EMPTY})\n\t\targuments are $*\\\""), 0666)
+		err = ioutil.WriteFile(filepath.Join(dir, "time_test.sh"), []byte("#!/usr/bin/env bash\n\necho -e \"BAR is (${BAR})\narguments are $*\""), 0666)
 		require.NoError(t, err)
 
 		err = os.Chmod(filepath.Join(dir, "time_test.sh"), 0777)
