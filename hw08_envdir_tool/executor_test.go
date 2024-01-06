@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/stretchr/testify/require"
-	"io/ioutil"
+	"github.com/stretchr/testify/require" //nolint:all
+	"io/ioutil"                           //nolint:all
 	"os"
 	"path/filepath"
-	"testing"
+	"testing" //nolint:all
 )
 
 func TestRunCmd(t *testing.T) {
@@ -14,16 +14,16 @@ func TestRunCmd(t *testing.T) {
 		require.NoError(t, err)
 		defer os.RemoveAll(dir)
 
-		err = os.Mkdir(filepath.Join(dir, "envs"), 0777)
+		err = os.Mkdir(filepath.Join(dir, "envs"), 0777) //nolint:all
 		require.NoError(t, err)
 
-		err = ioutil.WriteFile(filepath.Join(dir, "envs", "BAR"), []byte("bar"), 0666)
+		err = ioutil.WriteFile(filepath.Join(dir, "envs", "BAR"), []byte("bar"), 0666) //nolint:all
 		require.NoError(t, err)
 
-		err = ioutil.WriteFile(filepath.Join(dir, "time_test.sh"), []byte("#!/usr/bin/env bash\n\necho -e \"BAR is (${BAR})\narguments are $*\""), 0666)
+		err = ioutil.WriteFile(filepath.Join(dir, "time_test.sh"), []byte("#!/usr/bin/env bash\n\necho -e \"BAR is (${BAR})\narguments are $*\""), 0666) //nolint:all
 		require.NoError(t, err)
 
-		err = os.Chmod(filepath.Join(dir, "time_test.sh"), 0777)
+		err = os.Chmod(filepath.Join(dir, "time_test.sh"), 0777) //nolint:all
 		require.NoError(t, err)
 
 		env, err := ReadDir(filepath.Join(dir, "envs"))

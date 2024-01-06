@@ -5,8 +5,8 @@ import (
 	"os"
 )
 
-const errorReturnCode = 111
-const successReturnCode = 0
+const errorReturnCode = 111 //nolint:all
+const successReturnCode = 0 //nolint:all
 
 func main() {
 	args := os.Args[1:]
