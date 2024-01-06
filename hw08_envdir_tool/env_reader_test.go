@@ -15,7 +15,7 @@ func TestReadDir(t *testing.T) {
 		require.NoError(t, err)
 		defer os.RemoveAll(dir)
 
-		err = ioutil.WriteFile(filepath.Join(dir, "file_name"), []byte("\n"), 0666) //nolint:all
+		err = ioutil.WriteFile(filepath.Join(dir, "file_name"), []byte("\n"), 0666)
 		require.NoError(t, err)
 
 		expectEnv := Environment{
@@ -32,7 +32,7 @@ func TestReadDir(t *testing.T) {
 		require.NoError(t, err)
 		defer os.RemoveAll(dir)
 
-		err = ioutil.WriteFile(filepath.Join(dir, "file_name"), []byte("file_name"), 0666) //nolint:all
+		err = ioutil.WriteFile(filepath.Join(dir, "file_name"), []byte("file_name"), 0666)
 		require.NoError(t, err)
 
 		expectEnv := Environment{
