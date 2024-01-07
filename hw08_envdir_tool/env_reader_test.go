@@ -1,12 +1,12 @@
 package main
 
 import (
-	"io/ioutil" //nolint:unused
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
 
-	"github.com/stretchr/testify/require" //nolint:unused
+	"github.com/stretchr/testify/require" //nolint:all
 )
 
 func TestReadDir(t *testing.T) {
