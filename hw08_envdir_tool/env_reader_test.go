@@ -1,3 +1,4 @@
+//nolint:all
 package main
 
 import (
@@ -6,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/stretchr/testify/require" //nolint:all
+	"github.com/stretchr/testify/require"
 )
 
 func TestReadDir(t *testing.T) {

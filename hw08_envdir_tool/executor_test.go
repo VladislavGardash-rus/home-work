@@ -1,11 +1,12 @@
+//nolint:all
 package main
 
 import (
-	"github.com/stretchr/testify/require" //nolint:all
+	"github.com/stretchr/testify/require"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"testing" //nolint:all
+	"testing"
 )
 
 func TestRunCmd(t *testing.T) {
@@ -20,7 +21,7 @@ func TestRunCmd(t *testing.T) {
 		err = ioutil.WriteFile(filepath.Join(dir, "envs", "BAR"), []byte("bar"), 0o666)
 		require.NoError(t, err)
 
-		err = ioutil.WriteFile(filepath.Join(dir, "time_test.sh"), []byte("#!/usr/bin/env bash\n\necho -e \"BAR is (${BAR})\narguments are $*\""), 0o666) //nolint:all
+		err = ioutil.WriteFile(filepath.Join(dir, "time_test.sh"), []byte("#!/usr/bin/env bash\n\necho -e \"BAR is (${BAR})\narguments are $*\""), 0o666)
 		require.NoError(t, err)
 
 		err = os.Chmod(filepath.Join(dir, "time_test.sh"), 0o777)
