@@ -1,12 +1,12 @@
 package main
 
 import (
-	"io/ioutil" //nolint:all
+	"io/ioutil" //nolint:unused
 	"os"
 	"path/filepath"
 	"testing"
 
-	"github.com/stretchr/testify/require" //nolint:all
+	"github.com/stretchr/testify/require" //nolint:unused
 )
 
 func TestReadDir(t *testing.T) {
@@ -15,7 +15,7 @@ func TestReadDir(t *testing.T) {
 		require.NoError(t, err)
 		defer os.RemoveAll(dir)
 
-		err = ioutil.WriteFile(filepath.Join(dir, "file_name"), []byte("\n"), 0666)
+		err = ioutil.WriteFile(filepath.Join(dir, "file_name"), []byte("\n"), 0o666)
 		require.NoError(t, err)
 
 		expectEnv := Environment{
@@ -32,7 +32,7 @@ func TestReadDir(t *testing.T) {
 		require.NoError(t, err)
 		defer os.RemoveAll(dir)
 
-		err = ioutil.WriteFile(filepath.Join(dir, "file_name"), []byte("file_name"), 0666)
+		err = ioutil.WriteFile(filepath.Join(dir, "file_name"), []byte("file_name"), 0o666)
 		require.NoError(t, err)
 
 		expectEnv := Environment{

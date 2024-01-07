@@ -2,7 +2,7 @@ package main
 
 import (
 	"bufio"
-	"io/ioutil" //nolint:all
+	"io/ioutil" //nolint:unused
 	"os"
 	"path/filepath"
 	"strings"
