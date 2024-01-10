@@ -1,7 +1,6 @@
 //go:build bench
 // +build bench
 
-//nolint:all
 package hw10programoptimization
 
 import (
