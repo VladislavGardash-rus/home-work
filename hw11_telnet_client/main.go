@@ -31,7 +31,6 @@ func main() {
 	go sendMessage(connection, cancel)
 	go receiveMessage(connection, cancel)
 
-	time.Sleep(2 * time.Minute)
 	ctx.Done()
 }
 
