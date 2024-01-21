@@ -31,7 +31,7 @@ func main() {
 	go sendMessage(connection, cancel)
 	go receiveMessage(connection, cancel)
 
-	ctx.Done()
+	<-ctx.Done()
 }
 
 func getConnectionParams() (string, string, *time.Duration, error) {
@@ -48,8 +48,8 @@ func waitingCancelSignals(cancel context.CancelFunc) {
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 	<-signals
-	cancel()
 	fmt.Println("...Connection was closed by peer")
+	cancel()
 }
 
 func createConnection(ip, port string, timeout *time.Duration) (TelnetClient, error) {
