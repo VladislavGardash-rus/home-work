@@ -2,7 +2,7 @@ package main
 
 import (
 	"bufio"
-	"fmt"
+	"errors"
 	"io"
 	"log"
 	"net"
@@ -48,37 +48,39 @@ func (c *telnetClient) Close() error {
 }
 
 func (c *telnetClient) Send() error {
-	scanner := bufio.NewScanner(c.in)
-	for scanner.Scan() {
-		err := writeMessage(c.conn, scanner.Text())
+	r := bufio.NewReader(c.in)
+	for {
+		message, err := r.ReadString('\n')
+		if errors.Is(err, io.EOF) {
+			log.Println("...EOF")
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+
+		_, err = c.conn.Write([]byte(message))
 		if err != nil {
 			return err
 		}
 	}
-	return nil
 }
 
 func (c *telnetClient) Receive() error {
-	scanner := bufio.NewScanner(c.conn)
-	for scanner.Scan() {
-		err := writeMessage(c.out, scanner.Text())
+	r := bufio.NewReader(c.conn)
+	for {
+		message, err := r.ReadString('\n')
+		if errors.Is(err, io.EOF) {
+			log.Println("...Connection was closed by peer")
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+
+		_, err = c.out.Write([]byte(message))
 		if err != nil {
 			return err
 		}
 	}
-	return nil
-}
-
-func writeMessage(w io.Writer, message string) error {
-	if message == "" || []byte(message)[0] == 4 {
-		fmt.Println("...EOF")
-		return nil
-	}
-
-	_, err := w.Write([]byte(fmt.Sprintf("%s\n", message)))
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
