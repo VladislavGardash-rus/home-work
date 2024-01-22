@@ -18,7 +18,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	ctx, ctxCancelFunc := createContext(ip, port, timeout)
+	ctx, contextCancelFunc := createContext(ip, port, timeout)
 
 	connection, err := createConnection(ip, port, timeout)
 	if err != nil {
@@ -26,8 +26,8 @@ func main() {
 	}
 	defer connection.Close()
 
-	go sendMessage(connection, ctxCancelFunc)
-	go receiveMessage(connection, ctxCancelFunc)
+	go sendMessage(connection, contextCancelFunc)
+	go receiveMessage(connection, contextCancelFunc)
 
 	<-ctx.Done()
 }
@@ -45,12 +45,11 @@ func getConnectionParams() (string, string, *time.Duration, error) {
 func createContext(ip, port string, timeout *time.Duration) (context.Context, context.CancelFunc) {
 	ctx, ctxCancelFunc := context.WithCancel(context.Background())
 	ctx, ctxCancelFunc = signal.NotifyContext(ctx, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
-	ctxCancelFunc = func() {
+
+	return ctx, func() {
 		fmt.Println("...Connection was closed by peer")
 		ctxCancelFunc()
 	}
-
-	return ctx, ctxCancelFunc
 }
 
 func createConnection(ip, port string, timeout *time.Duration) (TelnetClient, error) {
@@ -62,16 +61,16 @@ func createConnection(ip, port string, timeout *time.Duration) (TelnetClient, er
 	return client, nil
 }
 
-func sendMessage(client TelnetClient, ctxCancelFunc context.CancelFunc) {
-	defer ctxCancelFunc()
+func sendMessage(client TelnetClient, contextCancelFunc context.CancelFunc) {
+	defer contextCancelFunc()
 	err := client.Send()
 	if err != nil {
 		log.Println(err)
 	}
 }
 
-func receiveMessage(client TelnetClient, ctxCancelFunc context.CancelFunc) {
-	defer ctxCancelFunc()
+func receiveMessage(client TelnetClient, contextCancelFunc context.CancelFunc) {
+	defer contextCancelFunc()
 	err := client.Receive()
 	if err != nil {
 		log.Println(err)
