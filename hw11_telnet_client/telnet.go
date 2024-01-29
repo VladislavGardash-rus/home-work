@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"syscall"
 	"time"
 )
 
@@ -51,11 +52,8 @@ func (c *telnetClient) Send() error {
 	r := bufio.NewReader(c.in)
 	for {
 		message, err := r.ReadString('\n')
-		if errors.Is(err, io.EOF) {
-			log.Println("...EOF")
-			return nil
-		}
 		if err != nil {
+			printLogMessage(err)
 			return err
 		}
 
@@ -70,11 +68,8 @@ func (c *telnetClient) Receive() error {
 	r := bufio.NewReader(c.conn)
 	for {
 		message, err := r.ReadString('\n')
-		if errors.Is(err, io.EOF) {
-			log.Println("...Connection was closed by peer")
-			return nil
-		}
 		if err != nil {
+			printLogMessage(err)
 			return err
 		}
 
@@ -82,5 +77,15 @@ func (c *telnetClient) Receive() error {
 		if err != nil {
 			return err
 		}
+	}
+}
+
+func printLogMessage(err error) {
+	if errors.Is(err, io.EOF) {
+		log.Println("...EOF")
+	}
+
+	if errors.Is(err, syscall.ECONNRESET) {
+		log.Print("...Connection was closed by peer")
 	}
 }
