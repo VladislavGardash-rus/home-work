@@ -18,15 +18,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-	ctx, _ := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	ctx, contextCancelFunc := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	connection, err := createConnection(ip, port, timeout)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer connection.Close()
 
-	go sendMessage(connection)
-	go receiveMessage(connection)
+	go sendMessage(connection, contextCancelFunc)
+	go receiveMessage(connection, contextCancelFunc)
 
 	<-ctx.Done()
 }
@@ -50,16 +50,12 @@ func createConnection(ip, port string, timeout *time.Duration) (TelnetClient, er
 	return client, nil
 }
 
-func sendMessage(client TelnetClient) {
-	err := client.Send()
-	if err != nil {
-		log.Fatal(err)
-	}
+func sendMessage(client TelnetClient, contextCancelFunc context.CancelFunc) {
+	defer contextCancelFunc()
+	client.Send()
 }
 
-func receiveMessage(client TelnetClient) {
-	err := client.Receive()
-	if err != nil {
-		log.Fatal(err)
-	}
+func receiveMessage(client TelnetClient, contextCancelFunc context.CancelFunc) {
+	defer contextCancelFunc()
+	client.Receive()
 }

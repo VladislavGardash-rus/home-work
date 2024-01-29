@@ -53,6 +53,7 @@ func (c *telnetClient) Send() error {
 		message, err := r.ReadString('\n')
 		if errors.Is(err, io.EOF) {
 			log.Println("...EOF")
+			return nil
 		}
 		if err != nil {
 			return err
@@ -71,6 +72,7 @@ func (c *telnetClient) Receive() error {
 		message, err := r.ReadString('\n')
 		if errors.Is(err, io.EOF) {
 			log.Println("...Connection was closed by peer")
+			return nil
 		}
 		if err != nil {
 			return err
