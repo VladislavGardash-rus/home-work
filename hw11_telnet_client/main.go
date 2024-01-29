@@ -18,7 +18,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	ctx, _ := signal.NotifyContext(context.Background(), syscall.SIGINT)
+	ctx, _ := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	connection, err := createConnection(ip, port, timeout)
 	if err != nil {
 		log.Fatal(err)
@@ -53,13 +53,13 @@ func createConnection(ip, port string, timeout *time.Duration) (TelnetClient, er
 func sendMessage(client TelnetClient) {
 	err := client.Send()
 	if err != nil {
-		os.Exit(0)
+		log.Fatal(err)
 	}
 }
 
 func receiveMessage(client TelnetClient) {
 	err := client.Receive()
 	if err != nil {
-		os.Exit(0)
+		log.Fatal(err)
 	}
 }
