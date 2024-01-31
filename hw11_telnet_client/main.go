@@ -25,8 +25,8 @@ func main() {
 	}
 	defer connection.Close()
 
-	go sendMessage(connection, contextCancelFunc)
-	go receiveMessage(connection, contextCancelFunc)
+	go sendMessage(ctx, connection, contextCancelFunc)
+	go receiveMessage(ctx, connection, contextCancelFunc)
 
 	<-ctx.Done()
 }
@@ -50,12 +50,24 @@ func createConnection(ip, port string, timeout *time.Duration) (TelnetClient, er
 	return client, nil
 }
 
-func sendMessage(client TelnetClient, contextCancelFunc context.CancelFunc) {
-	defer contextCancelFunc()
-	client.Send()
+func sendMessage(ctx context.Context, client TelnetClient, contextCancelFunc context.CancelFunc) {
+	select {
+	case <-ctx.Done():
+		return
+	default:
+		client.Send()
+		contextCancelFunc()
+		return
+	}
 }
 
-func receiveMessage(client TelnetClient, contextCancelFunc context.CancelFunc) {
-	defer contextCancelFunc()
-	client.Receive()
+func receiveMessage(ctx context.Context, client TelnetClient, contextCancelFunc context.CancelFunc) {
+	select {
+	case <-ctx.Done():
+		return
+	default:
+		client.Receive()
+		contextCancelFunc()
+		return
+	}
 }
