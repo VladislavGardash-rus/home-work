@@ -26,10 +26,9 @@ test:
 	go test -v -count=1 -race ./...
 
 install-lint-deps:
-	(which golangci-lint > /dev/null) || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.2
+	(which golangci-lint > /dev/null) || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.2 && chmod +x /bin/golangci-lint
 
 lint: install-lint-deps
-	chmod +x /bin/golangci-lint \
 	golangci-lint run ./...
 
 .PHONY: build-calendar run build-img run-img version test lint
