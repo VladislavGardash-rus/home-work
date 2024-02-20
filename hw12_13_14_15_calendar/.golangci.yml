@@ -27,3 +27,7 @@ linters:
     - wsl
     - wrapcheck
     - forbidigo
+    - govet
+    - errcheck
+    - gosimple
+    - ineffassign
