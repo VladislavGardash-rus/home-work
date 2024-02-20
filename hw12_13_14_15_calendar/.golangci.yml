@@ -12,4 +12,4 @@ linters:
   disable-all: false
   enable-all: false
   disable:
-    - gofumpt
+    - nakedret
