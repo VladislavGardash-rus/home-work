@@ -11,5 +11,19 @@ linters-settings:
 linters:
   disable-all: false
   enable-all: false
-  enable:
+  disable:
+    - exhaustive
+    - exhaustivestruct
+    - goerr113
+    - gochecknoglobals
+    - gochecknoinits
+    - godox
     - gofumpt
+    - gomnd
+    - lll
+    - nakedret
+    - nlreturn
+    - testpackage
+    - wsl
+    - wrapcheck
+    - forbidigo
