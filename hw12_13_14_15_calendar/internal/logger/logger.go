@@ -1,7 +1,7 @@
 package logger
 
 import (
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 type ILog interface {
@@ -12,37 +12,48 @@ type ILog interface {
 	Panic(args ...interface{})
 }
 
+var _logger *Logger
+
+func UseLogger() *Logger {
+	return _logger
+}
+
 type Logger struct {
-	ILog
-	stdOutLog *log.Logger
+	logger *logrus.Logger
 }
 
-func (l *Logger) Debug(args ...interface{}) {
-	if l.stdOutLog != nil {
-		l.stdOutLog.Debug(args)
+func InitLogger(logLevel string) error {
+	level, err := logrus.ParseLevel(logLevel)
+	if err != nil {
+		return err
 	}
+
+	logger := logrus.New()
+	logger.SetLevel(level)
+
+	_logger = &Logger{
+		logger: logger,
+	}
+
+	return nil
 }
 
-func (l *Logger) Info(args ...interface{}) {
-	if l.stdOutLog != nil {
-		l.stdOutLog.Info(args)
-	}
+func (l Logger) Debug(args ...interface{}) {
+	l.logger.Debug(args...)
 }
 
-func (l *Logger) Error(args ...interface{}) {
-	if l.stdOutLog != nil {
-		l.stdOutLog.Error(args)
-	}
+func (l Logger) Info(args ...interface{}) {
+	l.logger.Info(args...)
 }
 
-func (l *Logger) Fatal(args ...interface{}) {
-	if l.stdOutLog != nil {
-		l.stdOutLog.Fatal(args)
-	}
+func (l Logger) Error(args ...interface{}) {
+	l.logger.Error(args...)
 }
 
-func (l *Logger) Panic(args ...interface{}) {
-	if l.stdOutLog != nil {
-		l.stdOutLog.Panic(args)
-	}
+func (l Logger) Fatal(args ...interface{}) {
+	l.logger.Fatal(args...)
+}
+
+func (l Logger) Panic(args ...interface{}) {
+	l.logger.Panic(args...)
 }
