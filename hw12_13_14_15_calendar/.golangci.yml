@@ -9,8 +9,8 @@ linters-settings:
     local-prefixes: github.com/gardashvs/home-work/hw12_13_14_15_calendar
 
 linters:
-  disable-all: false
-  enable-all: true
+  disable-all: true
+  enable-all: false
   disable:
     - exhaustive
     - exhaustivestruct
