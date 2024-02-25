@@ -31,7 +31,7 @@ func Serve(h HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		b, err := json.Marshal(data)
+		b, _ := json.Marshal(data)
 		w.WriteHeader(http.StatusOK)
 		w.Write(b)
 	}
