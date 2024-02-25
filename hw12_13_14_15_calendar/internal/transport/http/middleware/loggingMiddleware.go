@@ -7,19 +7,19 @@ import (
 	"time"
 )
 
-func loggingMiddleware(handler http.Handler) http.Handler {
+func LoggingMiddleware(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		startTime := time.Now()
 
 		handler.ServeHTTP(w, r)
 
 		logger.UseLogger().Info(
-			fmt.Sprintf("%s %s %s %s %d %d %s",
+			fmt.Sprintf("%s %s %s %s %s %d %s",
 				r.RemoteAddr,
 				startTime.Format(time.DateTime),
 				r.Method,
 				r.RequestURI,
-				r.Response.StatusCode,
+				w.Header().Get("status"),
 				time.Since(startTime).Milliseconds(),
 				r.Header["User-Agent"],
 			))

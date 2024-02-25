@@ -6,6 +6,7 @@ import (
 	http_handlers "github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/handlers/http"
 	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/logger"
 	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/storage"
+	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/transport/http/middleware"
 	"github.com/gorilla/mux"
 	"net/http"
 	"time"
@@ -40,19 +41,19 @@ func NewServer(addr string, storage storage.IStorage, alias string) *Server {
 
 func (s *Server) initRoting() {
 	s.router = mux.NewRouter()
-	s.router.Use(loggingMiddleware)
-	s.router.HandleFunc("/hello-world", s.helloWorldHandler.GetHelloWorld).Methods(http.MethodGet)
+	s.router.Use(http_server.LoggingMiddleware)
+	s.router.HandleFunc("/hello-world", http_server.Serve(s.helloWorldHandler.GetHelloWorld)).Methods(http.MethodGet)
 
-	s.router.HandleFunc("/event", s.eventDataHandler.GetEvents).Methods(http.MethodGet)
-	s.router.HandleFunc("/event/create", s.eventDataHandler.PostCreateEvent).Methods(http.MethodPost)
-	s.router.HandleFunc("/event/update", s.eventDataHandler.PostUpdateEvent).Methods(http.MethodPost)
-	s.router.HandleFunc("/event/delete", s.eventDataHandler.PostDeleteEvent).Methods(http.MethodPost)
+	s.router.HandleFunc("/event", http_server.Serve(s.eventDataHandler.GetEvents)).Methods(http.MethodGet)
+	s.router.HandleFunc("/event/create", http_server.Serve(s.eventDataHandler.PostCreateEvent)).Methods(http.MethodPost)
+	s.router.HandleFunc("/event/update", http_server.Serve(s.eventDataHandler.PostUpdateEvent)).Methods(http.MethodPost)
+	s.router.HandleFunc("/event/delete", http_server.Serve(s.eventDataHandler.PostDeleteEvent)).Methods(http.MethodPost)
 
 	s.srv.Handler = s.router
 }
 
 func (s *Server) Start() error {
-	logger.UseLogger().Info(fmt.Sprintf("http: Server %s started on", s.alias), s.srv.Addr)
+	logger.UseLogger().Info(fmt.Sprintf("http: Server %s started on ", s.alias), s.srv.Addr)
 	return s.srv.ListenAndServe()
 }
 

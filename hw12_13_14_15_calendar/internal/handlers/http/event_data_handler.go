@@ -16,18 +16,18 @@ func NewEventDataHandler(storage storage.IStorage) *EventDataHandler {
 	return eventDataHandler
 }
 
-func (h *EventDataHandler) GetEvents(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
+func (h *EventDataHandler) GetEvents(r *http.Request) (interface{}, error) {
+	return nil, nil
 }
 
-func (h *EventDataHandler) PostCreateEvent(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
+func (h *EventDataHandler) PostCreateEvent(r *http.Request) (interface{}, error) {
+	return nil, nil
 }
 
-func (h *EventDataHandler) PostUpdateEvent(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
+func (h *EventDataHandler) PostUpdateEvent(r *http.Request) (interface{}, error) {
+	return nil, nil
 }
 
-func (h *EventDataHandler) PostDeleteEvent(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
+func (h *EventDataHandler) PostDeleteEvent(r *http.Request) (interface{}, error) {
+	return nil, nil
 }
