@@ -61,8 +61,9 @@ func (s *Storage) UpdateEvent(ctx context.Context, id int, event models.Event) e
 				  date_time_start = $2,
 				  date_time_end = $3,
 				  description = $4,
-				  notification_duration = $5
-			  WHERE id = $6;`
+				  user_id = $5,
+				  notification_duration = $6
+			  WHERE id = $7;`
 
 	_, err := s.db.ExecContext(ctx, query, args...)
 	if err != nil {
