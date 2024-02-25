@@ -17,9 +17,14 @@ type HandlerFunc func(r *http.Request) (interface{}, error)
 func Serve(h HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
+		response := new(http.Response)
+
 		data, err := h(r)
 		if err != nil {
 			logger.UseLogger().Error(err)
+
+			response.StatusCode = http.StatusBadRequest
+			r.Response = response
 
 			errorMessage := new(errorMessage)
 			errorMessage.Method = r.Method
@@ -28,9 +33,12 @@ func Serve(h HandlerFunc) http.HandlerFunc {
 			b, _ := json.Marshal(errorMessage)
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write(b)
+
 			return
 		}
 
+		response.StatusCode = http.StatusOK
+		r.Response = response
 		b, _ := json.Marshal(data)
 		w.WriteHeader(http.StatusOK)
 		w.Write(b)

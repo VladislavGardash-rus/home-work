@@ -14,12 +14,12 @@ func LoggingMiddleware(handler http.Handler) http.Handler {
 		handler.ServeHTTP(w, r)
 
 		logger.UseLogger().Info(
-			fmt.Sprintf("%s %s %s %s %s %d %s",
+			fmt.Sprintf("%s %s %s %s %d %d %s",
 				r.RemoteAddr,
 				startTime.Format(time.DateTime),
 				r.Method,
 				r.RequestURI,
-				w.Header().Get("status"),
+				r.Response.StatusCode,
 				time.Since(startTime).Milliseconds(),
 				r.Header["User-Agent"],
 			))
