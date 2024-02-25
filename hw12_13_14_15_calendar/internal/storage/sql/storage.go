@@ -102,7 +102,7 @@ func (s *Storage) GetEvents(ctx context.Context) ([]models.Event, error) {
 func (s *Storage) GetEventsByLastDay(ctx context.Context, date time.Time) ([]models.Event, error) {
 	query := `SELECT id, title, date_time_start, date_time_end, description, user_id, notification_duration
 			  FROM event
-			  WHERE date_time_end < date_trunc('minute', now() - interval '1 day')
+			  WHERE date_time_end > date_trunc('minute', now() - interval '1 day')
 		      ORDER BY date_time_start`
 	return s.prepareEvents(ctx, query)
 }
@@ -110,7 +110,7 @@ func (s *Storage) GetEventsByLastDay(ctx context.Context, date time.Time) ([]mod
 func (s *Storage) GetEventsByLastWeek(ctx context.Context, date time.Time) ([]models.Event, error) {
 	query := `SELECT id, title, date_time_start, date_time_end, description, user_id, notification_duration
 			  FROM event
-			  WHERE date_time_end < date_trunc('minute', now() - interval '1 week')
+			  WHERE date_time_end > date_trunc('minute', now() - interval '1 week')
 		      ORDER BY date_time_start`
 	return s.prepareEvents(ctx, query)
 }
@@ -118,7 +118,7 @@ func (s *Storage) GetEventsByLastWeek(ctx context.Context, date time.Time) ([]mo
 func (s *Storage) GetEventsByLastMonth(ctx context.Context, date time.Time) ([]models.Event, error) {
 	query := `SELECT id, title, date_time_start, date_time_end, description, user_id, notification_duration
 			  FROM event
-			  WHERE date_time_end < date_trunc('minute', now() - interval '1 month')
+			  WHERE date_time_end > date_trunc('minute', now() - interval '1 month')
 		      ORDER BY date_time_start`
 	return s.prepareEvents(ctx, query)
 }
