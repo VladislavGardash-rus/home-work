@@ -1,9 +1,11 @@
-package http_server
+package middleware
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/logger"
 	"net/http"
+	"time"
 )
 
 type errorMessage struct {
@@ -12,14 +14,16 @@ type errorMessage struct {
 	Error  string `json:"error"`
 }
 
-type HandlerFunc func(r *http.Request) (interface{}, error)
+type HandlerFunc func(ctx context.Context, r *http.Request) (interface{}, error)
 
 func Serve(h HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 		response := new(http.Response)
 
-		data, err := h(r)
+		ctx, _ := context.WithTimeout(context.Background(), 1*time.Minute)
+
+		data, err := h(ctx, r)
 		if err != nil {
 			logger.UseLogger().Error(err)
 

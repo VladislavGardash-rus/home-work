@@ -7,7 +7,8 @@ import (
 	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/cmd"
 	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/logger"
 	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/storage"
-	internalhttp "github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/transport/http"
+	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/transport/grpc_server"
+	http_server "github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/transport/http"
 	"net"
 	"os"
 	"os/signal"
@@ -46,9 +47,18 @@ func main() {
 		panic(err)
 	}
 
-	httpServer := internalhttp.NewServer(net.JoinHostPort(cfg.Config().CalendarHttpServer.Host, cfg.Config().CalendarHttpServer.Port), iStorage, "calendar")
+	httpServer := http_server.NewServer(net.JoinHostPort(cfg.Config().CalendarHttpServer.Host, cfg.Config().CalendarHttpServer.Port), iStorage, "calendar_http")
 	go func() {
 		err := httpServer.Start()
+		if err != nil {
+			logger.UseLogger().Error(err)
+			cancel()
+		}
+	}()
+
+	grpcServer := grpc_server.NewServer(net.JoinHostPort(cfg.Config().CalendarGrpcServer.Host, cfg.Config().CalendarGrpcServer.Port), iStorage, "calendar_grpc")
+	go func() {
+		err := grpcServer.Start()
 		if err != nil {
 			logger.UseLogger().Error(err)
 			cancel()
@@ -58,7 +68,7 @@ func main() {
 	logger.UseLogger().Info("calendar service is running...")
 
 	<-ctx.Done()
-	shutDownServer(ctx, httpServer)
+	shutDownServers(ctx, httpServer, grpcServer)
 
 	logger.UseLogger().Info("calendar service was stopped")
 }
@@ -70,8 +80,13 @@ func watchExitSignals(cancel context.CancelFunc) {
 	cancel()
 }
 
-func shutDownServer(ctx context.Context, httpServer *internalhttp.Server) {
+func shutDownServers(ctx context.Context, httpServer *http_server.Server, grpcServer *grpc_server.Server) {
 	err := httpServer.Stop(ctx)
+	if err != nil {
+		logger.UseLogger().Error(err)
+	}
+
+	err = grpcServer.Stop(ctx)
 	if err != nil {
 		logger.UseLogger().Error(err)
 	}

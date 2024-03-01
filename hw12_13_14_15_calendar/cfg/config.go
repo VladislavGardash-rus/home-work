@@ -7,10 +7,16 @@ var _config = new(Cfg)
 type Cfg struct {
 	Logger             LoggerConf         `json:"logger"`
 	CalendarHttpServer CalendarHttpServer `json:"calendarHttpServer"`
+	CalendarGrpcServer CalendarGrpcServer `json:"calendarGrpcServer"`
 	Storage            Storage            `json:"storage"`
 }
 
 type CalendarHttpServer struct {
+	Host string `json:"host"`
+	Port string `json:"port"`
+}
+
+type CalendarGrpcServer struct {
 	Host string `json:"host"`
 	Port string `json:"port"`
 }

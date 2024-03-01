@@ -7,6 +7,10 @@
     "port": "4000",
     "host": "localhost"
   },
+  "calendarGrpcServer": {
+    "port": "5000",
+    "host": "localhost"
+  },
   "storage": {
     "type": "database",
     "connection": "user=postgres password=1234 dbname=calendar sslmode=disable host=127.0.0.1"

@@ -1,4 +1,4 @@
-package http_server
+package middleware
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func LoggingMiddleware(handler http.Handler) http.Handler {
+func Logging(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		startTime := time.Now()
 

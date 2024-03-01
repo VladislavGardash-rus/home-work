@@ -13,6 +13,8 @@ const (
 	periodTypeLastMonth = "lastMonth"
 )
 
+var Periods = []string{periodTypeLastDay, periodTypeLastWeek, periodTypeLastMonth}
+
 type EventDataService struct {
 	storage storage.IStorage
 }
@@ -29,12 +31,12 @@ func (s *EventDataService) UpdateEvent(ctx context.Context, id int, event models
 	return s.storage.UpdateEvent(ctx, id, event)
 }
 
-func (s *EventDataService) DeleteEvent(ctx context.Context, id int, deleteOld bool) error {
-	if deleteOld {
-		return s.storage.DeleteEventsOldThenLastYear(ctx)
-	}
-
+func (s *EventDataService) DeleteEvent(ctx context.Context, id int) error {
 	return s.storage.DeleteEvent(ctx, id)
+}
+
+func (s *EventDataService) DeleteOldEvents(ctx context.Context) error {
+	return s.storage.DeleteEventsOldThenLastYear(ctx)
 }
 
 func (s *EventDataService) DeleteEventsByLastYear(ctx context.Context) error {

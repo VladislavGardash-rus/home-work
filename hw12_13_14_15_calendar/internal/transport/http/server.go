@@ -41,13 +41,14 @@ func NewServer(addr string, storage storage.IStorage, alias string) *Server {
 
 func (s *Server) initRoting() {
 	s.router = mux.NewRouter()
-	s.router.Use(http_server.LoggingMiddleware)
-	s.router.HandleFunc("/hello-world", http_server.Serve(s.helloWorldHandler.GetHelloWorld)).Methods(http.MethodGet)
+	s.router.Use(middleware.Logging)
+	s.router.HandleFunc("/hello-world", middleware.Serve(s.helloWorldHandler.GetHelloWorld)).Methods(http.MethodGet)
 
-	s.router.HandleFunc("/event", http_server.Serve(s.eventDataHandler.GetEvents)).Methods(http.MethodGet)
-	s.router.HandleFunc("/event/create", http_server.Serve(s.eventDataHandler.PostCreateEvent)).Methods(http.MethodPost)
-	s.router.HandleFunc("/event/update", http_server.Serve(s.eventDataHandler.PostUpdateEvent)).Methods(http.MethodPost)
-	s.router.HandleFunc("/event/delete", http_server.Serve(s.eventDataHandler.PostDeleteEvent)).Methods(http.MethodPost)
+	s.router.HandleFunc("/event", middleware.Serve(s.eventDataHandler.GetEvents)).Methods(http.MethodGet)
+	s.router.HandleFunc("/event", middleware.Serve(s.eventDataHandler.PostCreateEvent)).Methods(http.MethodPost)
+	s.router.HandleFunc("/event", middleware.Serve(s.eventDataHandler.PostUpdateEvent)).Methods(http.MethodPut)
+	s.router.HandleFunc("/event/old", middleware.Serve(s.eventDataHandler.PostDeleteOldEvents)).Methods(http.MethodDelete)
+	s.router.HandleFunc("/event/{id}", middleware.Serve(s.eventDataHandler.PostDeleteEvent)).Methods(http.MethodDelete)
 
 	s.srv.Handler = s.router
 }

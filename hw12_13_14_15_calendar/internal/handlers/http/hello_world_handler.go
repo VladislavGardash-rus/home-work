@@ -1,6 +1,7 @@
 package http_handlers
 
 import (
+	"context"
 	"net/http"
 )
 
@@ -10,6 +11,6 @@ func NewHelloWorldHandler() *HelloWorldHandler {
 	return new(HelloWorldHandler)
 }
 
-func (h *HelloWorldHandler) GetHelloWorld(r *http.Request) (interface{}, error) {
+func (h *HelloWorldHandler) GetHelloWorld(ctx context.Context, r *http.Request) (interface{}, error) {
 	return "Hello world", nil
 }
