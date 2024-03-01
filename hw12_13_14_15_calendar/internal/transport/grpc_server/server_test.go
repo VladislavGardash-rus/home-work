@@ -76,12 +76,6 @@ func TestServer(t *testing.T) {
 		require.NoError(t, err)
 
 		server.GracefulStop()
-
-		err = listener.Close()
-		require.NoError(t, err)
-
-		err = iStorage.Close()
-		require.NoError(t, err)
 	})
 }
 
