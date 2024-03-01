@@ -16,7 +16,7 @@ import (
 )
 
 func TestServer(t *testing.T) {
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
 
 	iStorage, err := storage.NewStorage(ctx, storage.MemoryBaseStorageType, "")
 	require.NoError(t, err)
@@ -26,8 +26,13 @@ func TestServer(t *testing.T) {
 
 	listener := bufconn.Listen(1024 * 1024)
 	go func() {
-		err = server.Serve(listener)
-		require.NoError(t, err)
+		select {
+		case <-ctx.Done():
+			return
+		default:
+			err = server.Serve(listener)
+			require.NoError(t, err)
+		}
 	}()
 
 	connFunc := func(context.Context, string) (net.Conn, error) {
@@ -65,6 +70,8 @@ func TestServer(t *testing.T) {
 	//Далее по списку
 
 	t.Run("shutdown", func(t *testing.T) {
+		cancel()
+
 		err = conn.Close()
 		require.NoError(t, err)
 
