@@ -78,6 +78,9 @@ func (c *Manager) Consume(ctx context.Context, queueName string, do func(message
 		false,
 		nil,
 	)
+	if err != nil {
+		return err
+	}
 
 	go func() {
 		for d := range msgs {
