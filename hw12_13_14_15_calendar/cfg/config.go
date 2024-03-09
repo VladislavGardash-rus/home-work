@@ -9,6 +9,7 @@ type Cfg struct {
 	CalendarHttpServer CalendarHttpServer `json:"calendarHttpServer"`
 	CalendarGrpcServer CalendarGrpcServer `json:"calendarGrpcServer"`
 	Storage            Storage            `json:"storage"`
+	RabbitMqAddress    string             `json:"rabbitMqAddress"`
 }
 
 type CalendarHttpServer struct {

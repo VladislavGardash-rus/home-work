@@ -11,6 +11,7 @@
     "port": "5000",
     "host": "localhost"
   },
+  "rabbitMqAddress": "amqp://guest:guest@localhost:5672/",
   "storage": {
     "type": "database",
     "connection": "user=postgres password=1234 dbname=calendar sslmode=disable host=127.0.0.1"

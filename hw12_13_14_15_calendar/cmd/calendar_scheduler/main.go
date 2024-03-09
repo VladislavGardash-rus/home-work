@@ -5,8 +5,10 @@ import (
 	"flag"
 	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/cfg"
 	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/cmd"
+	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/brokers/rabbit_mq"
 	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/logger"
 	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/services"
+	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/storage"
 	"os"
 	"os/signal"
 	"syscall"
@@ -39,7 +41,17 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	go watchExitSignals(cancel)
 
-	eventSchedulerService := services.NewEventSchedulerService()
+	iStorage, err := storage.NewStorage(ctx, cfg.Config().Storage.Type, cfg.Config().Storage.Connection)
+	if err != nil {
+		panic(err)
+	}
+
+	rabbitMqManager, err := rabbit_mq.NewManager(cfg.Config().RabbitMqAddress)
+	if err != nil {
+		panic(err)
+	}
+
+	eventSchedulerService := services.NewEventSchedulerService(rabbitMqManager, iStorage)
 	go eventSchedulerService.Start(ctx)
 
 	logger.UseLogger().Info("calendar_scheduler service is running...")

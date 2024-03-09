@@ -10,4 +10,5 @@ type Event struct {
 	Description          string         `json:"description"`
 	UserId               int            `json:"userId"`
 	NotificationDuration *time.Duration `json:"notificationDuration"`
+	IsSent               bool           `json:"isSent"`
 }

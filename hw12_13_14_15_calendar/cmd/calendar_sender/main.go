@@ -5,6 +5,7 @@ import (
 	"flag"
 	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/cfg"
 	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/cmd"
+	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/brokers/rabbit_mq"
 	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/logger"
 	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/services"
 	"os"
@@ -39,7 +40,12 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	go watchExitSignals(cancel)
 
-	eventSenderService := services.NewEventSenderService()
+	rabbitMqManager, err := rabbit_mq.NewManager(cfg.Config().RabbitMqAddress)
+	if err != nil {
+		panic(err)
+	}
+
+	eventSenderService := services.NewEventSenderService(rabbitMqManager)
 	go eventSenderService.Start(ctx)
 
 	logger.UseLogger().Info("calendar_sender service is running...")
