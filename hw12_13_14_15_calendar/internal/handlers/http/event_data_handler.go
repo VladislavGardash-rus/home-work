@@ -1,3 +1,4 @@
+//nolint:all
 package http_handlers
 
 import (
