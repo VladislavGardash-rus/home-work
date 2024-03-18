@@ -1,20 +1,59 @@
 package logger
 
-import "fmt"
+import (
+	"github.com/sirupsen/logrus"
+)
 
-type Logger struct { // TODO
+type ILog interface {
+	Debug(args ...interface{})
+	Info(args ...interface{})
+	Error(args ...interface{})
+	Fatal(args ...interface{})
+	Panic(args ...interface{})
 }
 
-func New(level string) *Logger {
-	return &Logger{}
+var _logger *Logger
+
+func UseLogger() *Logger {
+	return _logger
 }
 
-func (l Logger) Info(msg string) {
-	fmt.Println(msg)
+type Logger struct {
+	logger *logrus.Logger
 }
 
-func (l Logger) Error(msg string) {
-	// TODO
+func InitLogger(logLevel string) error {
+	level, err := logrus.ParseLevel(logLevel)
+	if err != nil {
+		return err
+	}
+
+	logger := logrus.New()
+	logger.SetLevel(level)
+
+	_logger = &Logger{
+		logger: logger,
+	}
+
+	return nil
 }
 
-// TODO
+func (l Logger) Debug(args ...interface{}) {
+	l.logger.Debug(args...)
+}
+
+func (l Logger) Info(args ...interface{}) {
+	l.logger.Info(args...)
+}
+
+func (l Logger) Error(args ...interface{}) {
+	l.logger.Error(args...)
+}
+
+func (l Logger) Fatal(args ...interface{}) {
+	l.logger.Fatal(args...)
+}
+
+func (l Logger) Panic(args ...interface{}) {
+	l.logger.Panic(args...)
+}

@@ -1,7 +1,14 @@
 package logger
 
-import "testing"
+import (
+	"github.com/stretchr/testify/require"
+	"testing"
+)
 
 func TestLogger(t *testing.T) {
-	// TODO
+	t.Run("simple", func(t *testing.T) {
+		err := InitLogger("info")
+		require.NoError(t, err)
+		UseLogger().Info("test message")
+	})
 }

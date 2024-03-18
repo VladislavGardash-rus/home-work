@@ -3,59 +3,91 @@ package main
 import (
 	"context"
 	"flag"
+	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/cfg"
+	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/cmd"
+	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/logger"
+	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/storage"
+	"github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/transport/grpc_server"
+	http_server "github.com/gardashvs/home-work/hw12_13_14_15_calendar/internal/transport/http"
+	"net"
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
-
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/app"
-	"github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/logger"
-	internalhttp "github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/server/http"
-	memorystorage "github.com/fixme_my_friend/hw12_13_14_15_calendar/internal/storage/memory"
 )
 
 var configFile string
 
 func init() {
-	flag.StringVar(&configFile, "config", "/etc/calendar/config.toml", "Path to configuration file")
+	flag.StringVar(&configFile, "config", "config.json", "Path to configuration file")
 }
 
 func main() {
 	flag.Parse()
 
 	if flag.Arg(0) == "version" {
-		printVersion()
-		return
+		cmd.PrintVersion("0.0.1", "01.02.2024", "")
+		os.Exit(0)
 	}
 
-	config := NewConfig()
-	logg := logger.New(config.Logger.Level)
+	err := cfg.InitConfig(configFile)
+	if err != nil {
+		panic(err)
+	}
 
-	storage := memorystorage.New()
-	calendar := app.New(logg, storage)
+	err = logger.InitLogger(cfg.Config().Logger.Level)
+	if err != nil {
+		panic(err)
+	}
 
-	server := internalhttp.NewServer(logg, calendar)
+	ctx, cancel := context.WithCancel(context.Background())
+	go watchExitSignals(cancel)
 
-	ctx, cancel := signal.NotifyContext(context.Background(),
-		syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
-	defer cancel()
+	iStorage, err := storage.NewStorage(ctx, cfg.Config().Storage.Type, cfg.Config().Storage.Connection)
+	if err != nil {
+		panic(err)
+	}
 
+	httpServer := http_server.NewServer(net.JoinHostPort(cfg.Config().CalendarHttpServer.Host, cfg.Config().CalendarHttpServer.Port), iStorage, "calendar_http")
 	go func() {
-		<-ctx.Done()
-
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
-		defer cancel()
-
-		if err := server.Stop(ctx); err != nil {
-			logg.Error("failed to stop http server: " + err.Error())
+		err := httpServer.Start()
+		if err != nil {
+			logger.UseLogger().Error(err)
+			cancel()
 		}
 	}()
 
-	logg.Info("calendar is running...")
+	grpcServer := grpc_server.NewServer(net.JoinHostPort(cfg.Config().CalendarGrpcServer.Host, cfg.Config().CalendarGrpcServer.Port), iStorage, "calendar_grpc")
+	go func() {
+		err := grpcServer.Start()
+		if err != nil {
+			logger.UseLogger().Error(err)
+			cancel()
+		}
+	}()
 
-	if err := server.Start(ctx); err != nil {
-		logg.Error("failed to start http server: " + err.Error())
-		cancel()
-		os.Exit(1) //nolint:gocritic
+	logger.UseLogger().Info("calendar service is running...")
+
+	<-ctx.Done()
+	shutDownServers(ctx, httpServer, grpcServer)
+
+	logger.UseLogger().Info("calendar service was stopped")
+}
+
+func watchExitSignals(cancel context.CancelFunc) {
+	signals := make(chan os.Signal, 1)
+	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
+	<-signals
+	cancel()
+}
+
+func shutDownServers(ctx context.Context, httpServer *http_server.Server, grpcServer *grpc_server.Server) {
+	err := httpServer.Stop(ctx)
+	if err != nil {
+		logger.UseLogger().Error(err)
+	}
+
+	err = grpcServer.Stop(ctx)
+	if err != nil {
+		logger.UseLogger().Error(err)
 	}
 }
